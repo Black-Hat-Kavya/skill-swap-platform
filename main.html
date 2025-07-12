@@ -1,0 +1,858 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Skill Swap Platform</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <style>
+    body {
+      background: #f5f6fa;
+      color: #222;
+      font-family: 'Poppins', Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+    }
+    .container {
+      max-width: 900px;
+      margin: 40px auto;
+      background: #fff;
+      border-radius: 18px;
+      box-shadow: 0 4px 24px rgba(0,0,0,0.08);
+      padding: 32px 32px 24px 32px;
+    }
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 28px;
+    }
+    h1 {
+      font-size: 2.2rem;
+      margin: 0;
+      font-weight: 700;
+    }
+    .nav {
+      display: flex;
+      gap: 18px;
+      align-items: center;
+    }
+    .nav button, #loginBtn {
+      padding: 8px 18px;
+      border: 2px solid #222;
+      background: #fff;
+      border-radius: 8px;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+    .nav button.active, .nav button:hover, #loginBtn:hover {
+      background: #f0f0f0;
+    }
+    .profile-photo, .profile-photo-big {
+      width: 60px;
+      height: 60px;
+      background: #e0e4ea;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 2rem;
+      font-weight: 600;
+      color: #555;
+      flex-shrink: 0;
+    }
+    .profile-photo-big {
+      width: 110px;
+      height: 110px;
+      font-size: 3.2rem;
+      margin: 0 auto 18px auto;
+    }
+    .search-bar {
+      display: flex;
+      gap: 12px;
+      margin-bottom: 28px;
+    }
+    .search-bar select,
+    .search-bar input {
+      padding: 8px 12px;
+      border: 1.5px solid #bbb;
+      border-radius: 7px;
+      font-size: 1rem;
+    }
+    .search-bar button {
+      padding: 8px 18px;
+      border: none;
+      background: #222;
+      color: #fff;
+      border-radius: 7px;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+    .search-bar button:hover {
+      background: #444;
+    }
+    .profile-card {
+      display: flex;
+      align-items: center;
+      background: #f8f9fb;
+      border-radius: 16px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+      padding: 22px 28px;
+      margin-bottom: 22px;
+      gap: 24px;
+    }
+    .profile-info {
+      flex: 1;
+    }
+    .profile-info h3 {
+      margin: 0 0 6px 0;
+      font-size: 1.25rem;
+      font-weight: 600;
+      cursor: pointer;
+      text-decoration: underline;
+    }
+    .skill {
+      display: inline-block;
+      background: #e3eafc;
+      color: #2a4d9b;
+      border-radius: 8px;
+      padding: 2px 10px;
+      margin: 0 4px 4px 0;
+      font-size: 0.98rem;
+    }
+    .rating {
+      margin-top: 6px;
+      color: #888;
+      font-size: 0.98rem;
+      font-weight: 500;
+    }
+    .request-btn {
+      padding: 10px 24px;
+      border: 2px solid #222;
+      background: #fff;
+      border-radius: 10px;
+      font-size: 1.08rem;
+      cursor: pointer;
+      transition: background 0.2s, color 0.2s;
+    }
+    .request-btn:hover {
+      background: #222;
+      color: #fff;
+    }
+    .pagination {
+      display: flex;
+      justify-content: center;
+      gap: 8px;
+      margin-top: 18px;
+    }
+    .pagination button {
+      background: #f0f0f0;
+      border: 1.5px solid #bbb;
+      border-radius: 6px;
+      padding: 6px 14px;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+    .pagination button.active,
+    .pagination button:hover {
+      background: #222;
+      color: #fff;
+      border-color: #222;
+    }
+    /* Login form */
+    .form-group {
+      margin-bottom: 18px;
+    }
+    .form-group label {
+      display: block;
+      margin-bottom: 6px;
+      font-weight: 500;
+    }
+    .form-group input, .form-group select, .form-group textarea {
+      width: 100%;
+      padding: 8px 10px;
+      border: 1.5px solid #bbb;
+      border-radius: 7px;
+      font-size: 1rem;
+      margin-bottom: 2px;
+    }
+    .form-actions {
+      display: flex;
+      gap: 12px;
+      margin-top: 10px;
+    }
+    .form-actions button {
+      padding: 8px 18px;
+      border: 2px solid #222;
+      background: #fff;
+      border-radius: 8px;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+    .form-actions button.save {
+      background: #2a4d9b;
+      color: #fff;
+      border-color: #2a4d9b;
+    }
+    .form-actions button.save:hover {
+      background: #1a2d5b;
+    }
+    .form-actions button.discard {
+      color: #c00;
+      border-color: #c00;
+    }
+    .form-actions button.discard:hover {
+      background: #fbeaea;
+    }
+    .swap-status {
+      font-weight: 600;
+      margin-left: 12px;
+    }
+    .swap-accept, .swap-reject {
+      margin-left: 10px;
+      cursor: pointer;
+      font-weight: 600;
+      border: none;
+      background: none;
+      font-size: 1rem;
+    }
+    .swap-accept { color: #1a7f1a; }
+    .swap-reject { color: #c00; }
+    .swap-accept:hover, .swap-reject:hover { text-decoration: underline; }
+    .center { text-align: center; }
+    .profile-edit-skills {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-bottom: 8px;
+    }
+    .profile-edit-skill {
+      background: #e3eafc;
+      color: #2a4d9b;
+      border-radius: 8px;
+      padding: 2px 10px;
+      font-size: 0.98rem;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+    .profile-edit-skill .remove-skill {
+      color: #c00;
+      cursor: pointer;
+      font-weight: bold;
+      margin-left: 2px;
+    }
+    .profile-edit-skill .remove-skill:hover {
+      text-decoration: underline;
+    }
+    .profile-edit-add {
+      margin-top: 4px;
+      display: flex;
+      gap: 6px;
+    }
+    .profile-edit-add input {
+      width: 120px;
+    }
+    .profile-edit-photo {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      margin-bottom: 18px;
+    }
+    .profile-edit-photo .profile-photo-big {
+      margin-bottom: 8px;
+    }
+    .profile-edit-photo button {
+      margin: 2px 0;
+      font-size: 0.95rem;
+      padding: 4px 10px;
+    }
+    .feedback-list {
+      margin-top: 18px;
+      padding-left: 0;
+      list-style: none;
+    }
+    .feedback-list li {
+      background: #f0f0f0;
+      border-radius: 8px;
+      margin-bottom: 8px;
+      padding: 8px 12px;
+      font-size: 0.98rem;
+    }
+    @media (max-width: 600px) {
+      .container { padding: 10px; }
+      .profile-card { flex-direction: column; align-items: flex-start; gap: 10px; }
+      .search-bar { flex-direction: column; gap: 8px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>Skill Swap Platform</h1>
+      <div class="nav">
+        <button id="navHome" class="active">Home</button>
+        <button id="navSwap">Swap Requests</button>
+        <button id="navProfile">Profile</button>
+        <button id="loginBtn">Login</button>
+      </div>
+    </header>
+    <!-- Home Page -->
+    <div id="screenHome">
+      <div class="search-bar">
+        <select id="availability">
+          <option value="">Availability</option>
+          <option value="weekends">Weekends</option>
+          <option value="evenings">Evenings</option>
+        </select>
+        <input type="text" id="searchInput" placeholder="Search...">
+        <button id="searchBtn">Search</button>
+      </div>
+      <div id="profiles"></div>
+      <div class="pagination" id="pagination"></div>
+    </div>
+    <!-- Login Page -->
+    <div id="screenLogin" style="display:none;">
+      <h2 class="center">Login</h2>
+      <form id="loginForm" style="max-width:350px;margin:0 auto;">
+        <div class="form-group">
+          <label>Email</label>
+          <input type="email" id="loginEmail" required>
+        </div>
+        <div class="form-group">
+          <label>Password</label>
+          <input type="password" id="loginPassword" required>
+        </div>
+        <div class="form-actions center">
+          <button type="submit" class="save">Login</button>
+        </div>
+        <div class="center" style="margin-top:10px;">
+          <a href="#" onclick="alert('Feature not implemented!')">Forgot username/password</a>
+        </div>
+      </form>
+    </div>
+    <!-- Profile Page -->
+    <div id="screenProfile" style="display:none;">
+      <h2 class="center">Your Profile</h2>
+      <form id="profileForm" style="max-width:500px;margin:0 auto;">
+        <div class="profile-edit-photo">
+          <div class="profile-photo-big" id="profilePhotoBig"></div>
+          <button type="button" id="editPhotoBtn">Add/Edit</button>
+          <button type="button" id="removePhotoBtn">Remove</button>
+        </div>
+        <div class="form-group">
+          <label>Name</label>
+          <input type="text" id="profileName" required>
+        </div>
+        <div class="form-group">
+          <label>Location</label>
+          <input type="text" id="profileLocation">
+        </div>
+        <div class="form-group">
+          <label>Skills Offered</label>
+          <div class="profile-edit-skills" id="skillsOfferedList"></div>
+          <div class="profile-edit-add">
+            <input type="text" id="addSkillOffered" placeholder="Add skill">
+            <button type="button" id="addSkillOfferedBtn">Add</button>
+          </div>
+        </div>
+        <div class="form-group">
+          <label>Skills Wanted</label>
+          <div class="profile-edit-skills" id="skillsWantedList"></div>
+          <div class="profile-edit-add">
+            <input type="text" id="addSkillWanted" placeholder="Add skill">
+            <button type="button" id="addSkillWantedBtn">Add</button>
+          </div>
+        </div>
+        <div class="form-group">
+          <label>Availability</label>
+          <input type="text" id="profileAvailability" placeholder="e.g. weekends">
+        </div>
+        <div class="form-group">
+          <label>Profile</label>
+          <select id="profilePublic">
+            <option value="public">Public</option>
+            <option value="private">Private</option>
+          </select>
+        </div>
+        <div class="form-actions center">
+          <button type="submit" class="save">Save</button>
+          <button type="button" class="discard" id="discardProfileBtn">Discard</button>
+        </div>
+      </form>
+    </div>
+    <!-- Profile Detail Page -->
+    <div id="screenProfileDetail" style="display:none;">
+      <div class="profile-photo-big" id="detailPhoto"></div>
+      <h2 id="detailName" class="center"></h2>
+      <div class="center" id="detailLocation"></div>
+      <div class="center" id="detailAvailability"></div>
+      <div class="center" style="margin:10px 0;">
+        <strong>Skills Offered:</strong>
+        <span id="detailSkillsOffered"></span>
+      </div>
+      <div class="center" style="margin-bottom:10px;">
+        <strong>Skills Wanted:</strong>
+        <span id="detailSkillsWanted"></span>
+      </div>
+      <div class="center rating" id="detailRating"></div>
+      <div class="center" style="margin:18px 0;">
+        <button class="request-btn" id="detailRequestBtn">Request</button>
+      </div>
+      <div>
+        <h3>Rating and Feedback</h3>
+        <ul class="feedback-list" id="detailFeedback"></ul>
+      </div>
+    </div>
+    <!-- Request Form Page -->
+    <div id="screenRequestForm" style="display:none;">
+      <h2 class="center">Swap Request</h2>
+      <form id="requestForm" style="max-width:400px;margin:0 auto;">
+        <div class="form-group">
+          <label>Choose one of your offered skills</label>
+          <select id="requestMySkill"></select>
+        </div>
+        <div class="form-group">
+          <label>Choose one of their wanted skills</label>
+          <select id="requestTheirSkill"></select>
+        </div>
+        <div class="form-group">
+          <label>Message</label>
+          <textarea id="requestMessage" rows="3"></textarea>
+        </div>
+        <div class="form-actions center">
+          <button type="submit" class="save">Submit</button>
+        </div>
+      </form>
+    </div>
+    <!-- Swap Requests Page -->
+    <div id="screenSwap" style="display:none;">
+      <h2 class="center">Swap Requests</h2>
+      <div class="search-bar">
+        <select id="swapStatusFilter">
+          <option value="">All</option>
+          <option value="pending">Pending</option>
+          <option value="accepted">Accepted</option>
+          <option value="rejected">Rejected</option>
+        </select>
+        <input type="text" id="swapSearchInput" placeholder="Search...">
+        <button id="swapSearchBtn">Search</button>
+      </div>
+      <div id="swapRequests"></div>
+      <div class="pagination" id="swapPagination"></div>
+    </div>
+  </div>
+  <script>
+    // --- Mock Data ---
+    let profiles = [
+      {
+        id: 1,
+        name: "Marc Demo",
+        photo: "",
+        skillsOffered: ["JavaScript", "Python"],
+        skillsWanted: ["Photoshop", "Graphic designer"],
+        rating: 3.9,
+        public: true,
+        availability: "weekends",
+        location: "New York",
+        feedback: [
+          { user: "Joe", text: "Great swap!", rating: 4 }
+        ]
+      },
+      {
+        id: 2,
+        name: "Michell",
+        photo: "",
+        skillsOffered: ["JavaScript", "Python"],
+        skillsWanted: ["Photoshop", "Graphic designer"],
+        rating: 2.5,
+        public: true,
+        availability: "evenings",
+        location: "London",
+        feedback: []
+      },
+      {
+        id: 3,
+        name: "Joe wills",
+        photo: "",
+        skillsOffered: ["JavaScript", "Python"],
+        skillsWanted: ["Photoshop", "Graphic designer"],
+        rating: 4.0,
+        public: true,
+        availability: "weekends",
+        location: "Berlin",
+        feedback: [
+          { user: "Marc", text: "Very helpful!", rating: 5 }
+        ]
+      }
+    ];
+    // Simulate logged-in user profile (id: 99)
+    let myProfile = JSON.parse(localStorage.getItem('myProfile')) || {
+      id: 99,
+      name: "Your Name",
+      photo: "",
+      skillsOffered: ["Graphic Design", "Video Editing", "Photoshop"],
+      skillsWanted: ["Python", "JavaScript", "Manager"],
+      rating: 4.2,
+      public: true,
+      availability: "weekends",
+      location: "Your City",
+      feedback: []
+    };
+    // Simulate swap requests
+    let swapRequests = JSON.parse(localStorage.getItem('swapRequests')) || [
+      {
+        id: 1,
+        from: 99, // myProfile
+        to: 1,
+        mySkill: "Graphic Design",
+        theirSkill: "Photoshop",
+        message: "Let's swap skills!",
+        status: "pending"
+      },
+      {
+        id: 2,
+        from: 1,
+        to: 99,
+        mySkill: "JavaScript",
+        theirSkill: "Python",
+        message: "Interested in your Python skills.",
+        status: "rejected"
+      }
+    ];
+    // Simulate login state
+    let loggedIn = !!localStorage.getItem('userLoggedIn');
+    // --- Navigation ---
+    function showScreen(screen) {
+      // Hide all
+      document.querySelectorAll('[id^="screen"]').forEach(div => div.style.display = 'none');
+      // Show one
+      document.getElementById('screen' + screen).style.display = '';
+      // Nav highlight
+      document.querySelectorAll('.nav button').forEach(btn => btn.classList.remove('active'));
+      if (screen === 'Home') document.getElementById('navHome').classList.add('active');
+      if (screen === 'Swap') document.getElementById('navSwap').classList.add('active');
+      if (screen === 'Profile') document.getElementById('navProfile').classList.add('active');
+    }
+    // --- Home Page Logic ---
+    const PROFILES_PER_PAGE = 2;
+    let currentPage = 1;
+    let filteredProfiles = profiles;
+    function renderProfiles() {
+      const start = (currentPage - 1) * PROFILES_PER_PAGE;
+      const end = start + PROFILES_PER_PAGE;
+      const visibleProfiles = filteredProfiles.slice(start, end);
+      const profilesDiv = document.getElementById('profiles');
+      profilesDiv.innerHTML = '';
+      if (visibleProfiles.length === 0) {
+        profilesDiv.innerHTML = '<p>No profiles found.</p>';
+        return;
+      }
+      visibleProfiles.forEach(profile => {
+        if (!profile.public) return;
+        const initials = profile.name.split(' ').map(n => n[0]).join('').toUpperCase();
+        const card = document.createElement('div');
+        card.className = 'profile-card';
+        card.innerHTML = `
+          <div class="profile-photo">${initials}</div>
+          <div class="profile-info">
+            <h3 data-id="${profile.id}">${profile.name}</h3>
+            <div>Skills Offered => ${profile.skillsOffered.map(skill => `<span class="skill">${skill}</span>`).join(' ')}</div>
+            <div>Skill wanted => ${profile.skillsWanted.map(skill => `<span class="skill">${skill}</span>`).join(' ')}</div>
+            <div class="rating">rating ${profile.rating}/5</div>
+          </div>
+          <button class="request-btn">Request</button>
+        `;
+        // Profile detail click
+        card.querySelector('h3').addEventListener('click', () => showProfileDetail(profile.id));
+        // Request button
+        card.querySelector('.request-btn').addEventListener('click', () => {
+          if (!loggedIn) {
+            showScreen('Login');
+          } else {
+            showProfileDetail(profile.id, true);
+          }
+        });
+        profilesDiv.appendChild(card);
+      });
+      renderPagination();
+    }
+    function renderPagination() {
+      const totalPages = Math.ceil(filteredProfiles.length / PROFILES_PER_PAGE);
+      const paginationDiv = document.getElementById('pagination');
+      paginationDiv.innerHTML = '';
+      if (totalPages <= 1) return;
+      for (let i = 1; i <= totalPages; i++) {
+        const btn = document.createElement('button');
+        btn.textContent = i;
+        if (i === currentPage) btn.classList.add('active');
+        btn.addEventListener('click', () => {
+          currentPage = i;
+          renderProfiles();
+        });
+        paginationDiv.appendChild(btn);
+      }
+    }
+    document.getElementById('searchBtn').addEventListener('click', () => {
+      const search = document.getElementById('searchInput').value.toLowerCase();
+      const avail = document.getElementById('availability').value;
+      filteredProfiles = profiles.filter(profile => {
+        const matchesSearch =
+          profile.name.toLowerCase().includes(search) ||
+          profile.skillsOffered.some(skill => skill.toLowerCase().includes(search)) ||
+          profile.skillsWanted.some(skill => skill.toLowerCase().includes(search));
+        const matchesAvail = avail ? profile.availability === avail : true;
+        return profile.public && matchesSearch && matchesAvail;
+      });
+      currentPage = 1;
+      renderProfiles();
+    });
+    // --- Login Logic ---
+    document.getElementById('loginBtn').addEventListener('click', () => {
+      if (!loggedIn) {
+        showScreen('Login');
+      } else {
+        loggedIn = false;
+        localStorage.removeItem('userLoggedIn');
+        document.getElementById('loginBtn').textContent = 'Login';
+        showScreen('Home');
+      }
+    });
+    document.getElementById('loginForm').addEventListener('submit', function(e) {
+      e.preventDefault();
+      loggedIn = true;
+      localStorage.setItem('userLoggedIn', '1');
+      document.getElementById('loginBtn').textContent = 'Logout';
+      showScreen('Home');
+    });
+    // --- Profile Logic ---
+    function renderProfileForm() {
+      document.getElementById('profileName').value = myProfile.name;
+      document.getElementById('profileLocation').value = myProfile.location;
+      document.getElementById('profileAvailability').value = myProfile.availability;
+      document.getElementById('profilePublic').value = myProfile.public ? 'public' : 'private';
+      renderProfileSkills('skillsOfferedList', myProfile.skillsOffered, 'offered');
+      renderProfileSkills('skillsWantedList', myProfile.skillsWanted, 'wanted');
+      renderProfilePhoto();
+    }
+    function renderProfileSkills(listId, skills, type) {
+      const list = document.getElementById(listId);
+      list.innerHTML = '';
+      skills.forEach((skill, idx) => {
+        const span = document.createElement('span');
+        span.className = 'profile-edit-skill';
+        span.innerHTML = `${skill} <span class="remove-skill" title="Remove">&times;</span>`;
+        span.querySelector('.remove-skill').onclick = () => {
+          if (type === 'offered') myProfile.skillsOffered.splice(idx, 1);
+          else myProfile.skillsWanted.splice(idx, 1);
+          renderProfileSkills(listId, type === 'offered' ? myProfile.skillsOffered : myProfile.skillsWanted, type);
+        };
+        list.appendChild(span);
+      });
+    }
+    document.getElementById('addSkillOfferedBtn').onclick = () => {
+      const val = document.getElementById('addSkillOffered').value.trim();
+      if (val) {
+        myProfile.skillsOffered.push(val);
+        document.getElementById('addSkillOffered').value = '';
+        renderProfileSkills('skillsOfferedList', myProfile.skillsOffered, 'offered');
+      }
+    };
+    document.getElementById('addSkillWantedBtn').onclick = () => {
+      const val = document.getElementById('addSkillWanted').value.trim();
+      if (val) {
+        myProfile.skillsWanted.push(val);
+        document.getElementById('addSkillWanted').value = '';
+        renderProfileSkills('skillsWantedList', myProfile.skillsWanted, 'wanted');
+      }
+    };
+    function renderProfilePhoto() {
+      document.getElementById('profilePhotoBig').textContent = myProfile.photo || (myProfile.name ? myProfile.name.split(' ').map(n => n[0]).join('').toUpperCase() : 'U');
+    }
+    document.getElementById('editPhotoBtn').onclick = () => {
+      const val = prompt('Enter initials or emoji for your photo:', myProfile.photo || '');
+      if (val !== null) {
+        myProfile.photo = val.trim();
+        renderProfilePhoto();
+      }
+    };
+    document.getElementById('removePhotoBtn').onclick = () => {
+      myProfile.photo = '';
+      renderProfilePhoto();
+    };
+    document.getElementById('profileForm').onsubmit = function(e) {
+      e.preventDefault();
+      myProfile.name = document.getElementById('profileName').value.trim();
+      myProfile.location = document.getElementById('profileLocation').value.trim();
+      myProfile.availability = document.getElementById('profileAvailability').value.trim();
+      myProfile.public = document.getElementById('profilePublic').value === 'public';
+      localStorage.setItem('myProfile', JSON.stringify(myProfile));
+      alert('Profile saved!');
+      showScreen('Home');
+    };
+    document.getElementById('discardProfileBtn').onclick = function() {
+      myProfile = JSON.parse(localStorage.getItem('myProfile')) || myProfile;
+      renderProfileForm();
+    };
+    // --- Profile Detail Logic ---
+    let currentDetailProfile = null;
+    function showProfileDetail(id, openRequest) {
+      const profile = profiles.find(p => p.id === id);
+      if (!profile) return;
+      currentDetailProfile = profile;
+      document.getElementById('detailPhoto').textContent = profile.photo || (profile.name ? profile.name.split(' ').map(n => n[0]).join('').toUpperCase() : 'U');
+      document.getElementById('detailName').textContent = profile.name;
+      document.getElementById('detailLocation').textContent = profile.location ? "Location: " + profile.location : "";
+      document.getElementById('detailAvailability').textContent = profile.availability ? "Availability: " + profile.availability : "";
+      document.getElementById('detailSkillsOffered').innerHTML = profile.skillsOffered.map(skill => `<span class="skill">${skill}</span>`).join(' ');
+      document.getElementById('detailSkillsWanted').innerHTML = profile.skillsWanted.map(skill => `<span class="skill">${skill}</span>`).join(' ');
+      document.getElementById('detailRating').textContent = "rating " + profile.rating + "/5";
+      // Feedback
+      const feedbackList = document.getElementById('detailFeedback');
+      feedbackList.innerHTML = profile.feedback && profile.feedback.length
+        ? profile.feedback.map(f => `<li><b>${f.user}:</b> ${f.text} (${f.rating}/5)</li>`).join('')
+        : "<li>No feedback yet.</li>";
+      // Request button
+      document.getElementById('detailRequestBtn').onclick = () => {
+        if (!loggedIn) {
+          showScreen('Login');
+        } else {
+          showRequestForm();
+        }
+      };
+      showScreen('ProfileDetail');
+      if (openRequest) showRequestForm();
+    }
+    // --- Request Form Logic ---
+    function showRequestForm() {
+      // Populate selects
+      const mySkills = myProfile.skillsOffered;
+      const theirSkills = currentDetailProfile.skillsWanted;
+      const mySkillSel = document.getElementById('requestMySkill');
+      const theirSkillSel = document.getElementById('requestTheirSkill');
+      mySkillSel.innerHTML = mySkills.map(skill => `<option>${skill}</option>`).join('');
+      theirSkillSel.innerHTML = theirSkills.map(skill => `<option>${skill}</option>`).join('');
+      document.getElementById('requestMessage').value = '';
+      showScreen('RequestForm');
+    }
+    document.getElementById('requestForm').onsubmit = function(e) {
+      e.preventDefault();
+      // Add swap request
+      swapRequests.push({
+        id: Date.now(),
+        from: myProfile.id,
+        to: currentDetailProfile.id,
+        mySkill: document.getElementById('requestMySkill').value,
+        theirSkill: document.getElementById('requestTheirSkill').value,
+        message: document.getElementById('requestMessage').value,
+        status: "pending"
+      });
+      localStorage.setItem('swapRequests', JSON.stringify(swapRequests));
+      alert('Swap request sent!');
+      showScreen('Home');
+    };
+    // --- Swap Requests Logic ---
+    const SWAPS_PER_PAGE = 3;
+    let swapPage = 1;
+    let filteredSwaps = swapRequests;
+    function renderSwapRequests() {
+      // Show only swaps involving me
+      filteredSwaps = swapRequests.filter(s => s.from === myProfile.id || s.to === myProfile.id);
+      // Filter
+      const status = document.getElementById('swapStatusFilter').value;
+      const search = document.getElementById('swapSearchInput').value.toLowerCase();
+      if (status) filteredSwaps = filteredSwaps.filter(s => s.status === status);
+      if (search) filteredSwaps = filteredSwaps.filter(s => {
+        const otherId = s.from === myProfile.id ? s.to : s.from;
+        const other = profiles.find(p => p.id === otherId) || myProfile;
+        return other.name.toLowerCase().includes(search);
+      });
+      // Pagination
+      const start = (swapPage - 1) * SWAPS_PER_PAGE;
+      const end = start + SWAPS_PER_PAGE;
+      const visibleSwaps = filteredSwaps.slice(start, end);
+      const swapDiv = document.getElementById('swapRequests');
+      swapDiv.innerHTML = '';
+      if (visibleSwaps.length === 0) {
+        swapDiv.innerHTML = '<p>No swap requests found.</p>';
+        return;
+      }
+      visibleSwaps.forEach(swap => {
+        const isMine = swap.from === myProfile.id;
+        const otherId = isMine ? swap.to : swap.from;
+        const other = profiles.find(p => p.id === otherId) || myProfile;
+        const card = document.createElement('div');
+        card.className = 'profile-card';
+        card.innerHTML = `
+          <div class="profile-photo">${other.name.split(' ').map(n => n[0]).join('').toUpperCase()}</div>
+          <div class="profile-info">
+            <h3>${other.name}</h3>
+            <div>Skills Offered => <span class="skill">${swap.mySkill}</span></div>
+            <div>Skill wanted => <span class="skill">${swap.theirSkill}</span></div>
+            <div class="rating">Message: ${swap.message}</div>
+          </div>
+          <div>
+            <span class="swap-status" style="color:${swap.status==='pending'?'#888':swap.status==='accepted'?'#1a7f1a':'#c00'}">${swap.status.charAt(0).toUpperCase()+swap.status.slice(1)}</span>
+            ${!isMine && swap.status==='pending' ? `
+              <button class="swap-accept">Accept</button>
+              <button class="swap-reject">Reject</button>
+            ` : ''}
+          </div>
+        `;
+        // Accept/Reject
+        if (!isMine && swap.status === 'pending') {
+          card.querySelector('.swap-accept').onclick = () => {
+            swap.status = 'accepted';
+            localStorage.setItem('swapRequests', JSON.stringify(swapRequests));
+            renderSwapRequests();
+          };
+          card.querySelector('.swap-reject').onclick = () => {
+            swap.status = 'rejected';
+            localStorage.setItem('swapRequests', JSON.stringify(swapRequests));
+            renderSwapRequests();
+          };
+        }
+        swapDiv.appendChild(card);
+      });
+      renderSwapPagination();
+    }
+    function renderSwapPagination() {
+      const totalPages = Math.ceil(filteredSwaps.length / SWAPS_PER_PAGE);
+      const paginationDiv = document.getElementById('swapPagination');
+      paginationDiv.innerHTML = '';
+      if (totalPages <= 1) return;
+      for (let i = 1; i <= totalPages; i++) {
+        const btn = document.createElement('button');
+        btn.textContent = i;
+        if (i === swapPage) btn.classList.add('active');
+        btn.addEventListener('click', () => {
+          swapPage = i;
+          renderSwapRequests();
+        });
+        paginationDiv.appendChild(btn);
+      }
+    }
+    document.getElementById('swapSearchBtn').onclick = () => {
+      swapPage = 1;
+      renderSwapRequests();
+    };
+    document.getElementById('swapStatusFilter').onchange = () => {
+      swapPage = 1;
+      renderSwapRequests();
+    };
+    // --- Navigation Events ---
+    document.getElementById('navHome').onclick = () => { showScreen('Home'); renderProfiles(); };
+    document.getElementById('navSwap').onclick = () => { showScreen('Swap'); renderSwapRequests(); };
+    document.getElementById('navProfile').onclick = () => { showScreen('Profile'); renderProfileForm(); };
+    // --- Initial Load ---
+    window.onload = function() {
+      document.getElementById('loginBtn').textContent = loggedIn ? 'Logout' : 'Login';
+      showScreen('Home');
+      renderProfiles();
+    };
+  </script>
+</body>
+</html>
